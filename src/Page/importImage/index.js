@@ -12,7 +12,6 @@ const TeachableMachineImageModel = () => {
       const modelURL = URL + "model.json";
       const metadataURL = URL + "metadata.json";
 
-      // load the model and metadata
       const loadedModel = await tmImage.load(modelURL, metadataURL);
       setModel(loadedModel);
       setMaxPredictions(loadedModel.getTotalClasses());
@@ -20,7 +19,6 @@ const TeachableMachineImageModel = () => {
       const container = document.getElementById("label-container");
       setLabelContainer(container);
       for (let i = 0; i < maxPredictions; i++) {
-        // create class labels
         container.appendChild(document.createElement("div"));
       }
     }
@@ -53,8 +51,13 @@ const TeachableMachineImageModel = () => {
   return (
     <div>
       <img id="imagePreview" style={{ height: "300px" }} alt="Preview" />
-      <input id="imageUpload" type="file" onChange={(e) => readURL(e.target)} />
-      <div>Teachable Machine Image Model with upload</div>
+      <input
+        id="imageUpload"
+        type="file"
+        accept="image/*"
+        onChange={(e) => readURL(e.target)}
+      />
+      <div>this is: </div>
       <div id="label-container"></div>
     </div>
   );

@@ -6,6 +6,9 @@ const TeachableMachineWebcam = () => {
   const [webcam, setWebcam] = useState(null);
   const [labelContainer, setLabelContainer] = useState(null);
   const [maxPredictions, setMaxPredictions] = useState(0);
+  const [isInitialized, setIsInitialized] = useState(false); // Track initialization state
+
+  const CONFIDENCE_THRESHOLD = 0.7; // Adjust this value as needed
 
   useEffect(() => {
     let isMounted = true;
@@ -15,47 +18,54 @@ const TeachableMachineWebcam = () => {
       const modelURL = URL + "model.json";
       const metadataURL = URL + "metadata.json";
 
-      // Load the model and metadata
       const loadedModel = await tmImage.load(modelURL, metadataURL);
       if (isMounted) {
         setModel(loadedModel);
         setMaxPredictions(loadedModel.getTotalClasses());
 
-        // Setup webcam
-        const flip = true; // Whether to flip the webcam
-        const webcamInstance = new tmImage.Webcam(200, 200, flip); // width, height, flip
-        await webcamInstance.setup(); // Request access to the webcam
+        const flip = true;
+        const webcamInstance = new tmImage.Webcam(200, 200, flip);
+        await webcamInstance.setup();
         await webcamInstance.play();
         setWebcam(webcamInstance);
 
-        // Append webcam canvas to DOM
         const webcamContainer = document.getElementById("webcam-container");
         webcamContainer.appendChild(webcamInstance.canvas);
 
-        // Setup label container
         const newLabelContainer = document.createElement("div");
         newLabelContainer.id = "label-container";
         setLabelContainer(newLabelContainer);
         webcamContainer.appendChild(newLabelContainer);
+
+        setIsInitialized(true); // Mark initialization as done
       }
     }
 
-    init();
+    if (isInitialized) {
+      init();
+    }
 
-    // Cleanup function
     return () => {
       isMounted = false;
       if (webcam) {
         webcam.stop();
       }
     };
-  }, []);
+  }, [isInitialized]); // Run useEffect whenever isInitialized changes
+
+  const handleInitialize = () => {
+    setIsInitialized(true); // Trigger initialization when button is clicked
+  };
 
   const predict = async () => {
     if (model && webcam) {
       const predictions = await model.predictTopK(webcam.canvas, 1);
       if (labelContainer) {
-        labelContainer.innerText = predictions[0].className;
+        if (predictions[0].probability >= CONFIDENCE_THRESHOLD) {
+          labelContainer.innerText = predictions[0].className;
+        } else {
+          labelContainer.innerText = "Unknown";
+        }
       }
     }
   };
@@ -64,7 +74,7 @@ const TeachableMachineWebcam = () => {
     let animationFrame;
     const loop = async () => {
       if (webcam) {
-        webcam.update(); // Update the webcam frame
+        webcam.update();
         await predict();
         animationFrame = requestAnimationFrame(loop);
       }
@@ -83,6 +93,7 @@ const TeachableMachineWebcam = () => {
     <div>
       <div>Teachable Machine Image Model</div>
       <div id="webcam-container"></div>
+      {!isInitialized && <button onClick={handleInitialize}>Initialize</button>}
     </div>
   );
 };

@@ -11,7 +11,7 @@ const App = () => {
           <nav>
             <ul>
               <li>
-                <Link to="/TeachableMachineImageModel">Image Detect</Link>
+                <Link to="/">Image Detect</Link>
               </li>
               <li>
                 <Link to="/TeachableMachineWebcam">Model 1</Link>
@@ -20,15 +20,11 @@ const App = () => {
           </nav>
 
           <Routes>
-            <Route
-              path="/TeachableMachineImageModel"
-              element={<TeachableMachineImageModel />}
-            />
+            <Route path="/" element={<TeachableMachineImageModel />} />
             <Route
               path="/TeachableMachineWebcam"
               element={<TeachableMachineWebcam />}
             />
-            <Route path="/" element={<h2>Home</h2>} />
           </Routes>
         </div>
       </div>
