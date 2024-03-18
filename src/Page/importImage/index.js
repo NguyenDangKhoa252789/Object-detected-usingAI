@@ -28,8 +28,20 @@ const TeachableMachineImageModel = () => {
 
   const predict = async () => {
     const image = document.getElementById("imagePreview");
-    const predictions = await model.predictTopK(image, 1);
-    labelContainer.innerText = predictions[0].className;
+    if (!model) return;
+
+    const predictions = await model.predictTopK(image, maxPredictions);
+
+    let hasUnknown = false;
+    for (let i = 0; i < maxPredictions; i++) {
+      if (predictions[i].probability >= 0.8) {
+        labelContainer.innerText = predictions[i].className;
+        return;
+      } else if (predictions[i].probability < 0.8 && !hasUnknown) {
+        labelContainer.innerText = "Unknown";
+        hasUnknown = true;
+      }
+    }
   };
 
   const readURL = (input) => {
