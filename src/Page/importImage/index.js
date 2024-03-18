@@ -8,7 +8,8 @@ const TeachableMachineImageModel = () => {
 
   useEffect(() => {
     async function init() {
-      const URL = "https://teachablemachine.withgoogle.com/models/dpZNGiQFF/";
+      const URL = "https://teachablemachine.withgoogle.com/models/jhvKwchpQ/";
+      // const URL = "https://teachablemachine.withgoogle.com/models/4cXjbgFCL/";
       const modelURL = URL + "model.json";
       const metadataURL = URL + "metadata.json";
 

@@ -6,15 +6,15 @@ const TeachableMachineWebcam = () => {
   const [webcam, setWebcam] = useState(null);
   const [labelContainer, setLabelContainer] = useState(null);
   const [maxPredictions, setMaxPredictions] = useState(0);
-  const [isInitialized, setIsInitialized] = useState(false); // Track initialization state
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  const CONFIDENCE_THRESHOLD = 0.7; // Adjust this value as needed
+  const CONFIDENCE_THRESHOLD = 0.8;
 
   useEffect(() => {
     let isMounted = true;
 
     async function init() {
-      const URL = "https://teachablemachine.withgoogle.com/models/dpZNGiQFF/";
+      const URL = "https://teachablemachine.withgoogle.com/models/jhvKwchpQ/";
       const modelURL = URL + "model.json";
       const metadataURL = URL + "metadata.json";
 
@@ -37,7 +37,7 @@ const TeachableMachineWebcam = () => {
         setLabelContainer(newLabelContainer);
         webcamContainer.appendChild(newLabelContainer);
 
-        setIsInitialized(true); // Mark initialization as done
+        setIsInitialized(true);
       }
     }
 
@@ -51,10 +51,10 @@ const TeachableMachineWebcam = () => {
         webcam.stop();
       }
     };
-  }, [isInitialized]); // Run useEffect whenever isInitialized changes
+  }, [isInitialized]);
 
   const handleInitialize = () => {
-    setIsInitialized(true); // Trigger initialization when button is clicked
+    setIsInitialized(true);
   };
 
   const predict = async () => {
@@ -91,7 +91,7 @@ const TeachableMachineWebcam = () => {
 
   return (
     <div>
-      <div>Teachable Machine Image Model</div>
+      <div></div>
       <div id="webcam-container"></div>
       {!isInitialized && <button onClick={handleInitialize}>Initialize</button>}
     </div>
